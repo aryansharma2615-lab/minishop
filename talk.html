@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SP Minishop · Presentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#0d1012;--ink:#eef1f3;--mute:#8d979f;--line:#252b30;--pcb:#1f7a4a;--gold:#e2b54a;--print:#2b2f33;
+--c-print:#4aa3ff;--c-laser:#f5a524;--c-cnc:#a78bfa;--c-bend:#2dd4bf;--red:#e5484d;--teal:#2dd4bf;--copper:#d08a4f}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+#stage{flex:1;min-height:0;position:relative;cursor:pointer}
+#stage svg{position:absolute;inset:0;width:100%;height:100%}
+.top{position:absolute;top:18px;left:28px;right:28px;display:flex;justify-content:space-between;font:500 13px "IBM Plex Sans";color:var(--mute);letter-spacing:.06em;text-transform:uppercase;pointer-events:none;z-index:2}
+.bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
+.bar i{display:block;height:100%;background:var(--ink);transition:width .6s}
+#desc{flex:0 0 auto;padding:22px 6vw 30px;border-top:1px solid var(--line);background:linear-gradient(#111518,#0d1012);min-height:27vh;display:flex;flex-direction:column;justify-content:center}
+#desc h2{margin:0 0 10px;font:700 clamp(26px,3vw,42px)/1.05 "Barlow Condensed",sans-serif;letter-spacing:.01em}
+#desc p{margin:0;font-size:clamp(16px,1.45vw,22px);line-height:1.55;color:#d3d9dd;max-width:72em}
+#desc .fade{transition:opacity .45s}
+.hint{position:absolute;right:28px;bottom:14px;font-size:12px;color:#5d676f;pointer-events:none}
+svg text{font-family:"IBM Plex Sans",sans-serif}
+@media (max-width:700px){#desc{padding:16px 16px 22px;min-height:38vh}.top{left:16px;right:16px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <div class="top"><span>SP Minishop · CEN100 Team 8</span><span id="count">1 / 9</span></div>
+    <svg id="w" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <pattern id="ribB" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#bfc4c8"/><rect width="1.4" height="6" fill="#8a9095"/></pattern>
+        <linearGradient id="fin" x1="0" x2="1"><stop offset="0" stop-color="#3a4046"/><stop offset=".5" stop-color="#596168"/><stop offset="1" stop-color="#3a4046"/></linearGradient>
+        <linearGradient id="alu" x1="0" x2="1"><stop offset="0" stop-color="#6b757c"/><stop offset=".5" stop-color="#8f99a0"/><stop offset="1" stop-color="#6b757c"/></linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="bigGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g id="world">
+        <!-- table -->
+        <rect x="-4200" y="780" width="7400" height="60" fill="#1a1f23"/>
+        <!-- printer frame (open, no enclosure) -->
+        <rect x="-760" y="640" width="2160" height="140" rx="16" fill="#23282c" stroke="#353c42" stroke-width="4"/>
+        <rect x="760" y="660" width="300" height="100" rx="8" fill="var(--pcb)"/>
+        <text x="910" y="722" text-anchor="middle" font-size="46" fill="#d8f3e4">mainboard</text>
+        <rect x="1080" y="660" width="200" height="100" rx="8" fill="#13385f" stroke="var(--c-print)" stroke-width="4"/>
+        <text x="1180" y="722" text-anchor="middle" font-size="46" fill="#cfe4ff">ESP32</text>
+        <rect x="-700" y="-1300" width="90" height="1940" fill="url(#alu)"/>
+        <rect x="1250" y="-1300" width="90" height="1940" fill="url(#alu)"/>
+        <rect x="-740" y="-1360" width="2120" height="70" rx="8" fill="url(#alu)"/>
+        <!-- bed -->
+        <rect x="-420" y="526" width="1480" height="30" fill="#3b4349"/>
+        <rect x="20" y="556" width="600" height="84" fill="#2a3035"/>
+        <!-- E-stop + key (laser safety) -->
+        <g id="safe">
+          <circle cx="-620" cy="710" r="52" fill="var(--red)" stroke="#fff" stroke-width="6" id="estop"/>
+          <text x="-620" y="726" text-anchor="middle" font-size="40" font-weight="700" fill="#fff">STOP</text>
+          <rect x="-520" y="670" width="150" height="80" rx="10" fill="#30363b" stroke="var(--c-laser)" stroke-width="4"/>
+          <text x="-445" y="723" text-anchor="middle" font-size="40" fill="var(--c-laser)">KEY</text>
+        </g>
+        <!-- IoT relay + wall (CNC mains, off the printer) -->
+        <g id="relayW">
+          <rect x="1480" y="640" width="380" height="140" rx="14" fill="#30363b" stroke="var(--c-cnc)" stroke-width="5"/>
+          <text x="1670" y="700" text-anchor="middle" font-size="46" fill="#eef1f3">IoT relay</text>
+          <text x="1670" y="748" text-anchor="middle" font-size="34" fill="#8d979f">wall power</text>
+          <path id="cordW" fill="none" stroke="#111" stroke-width="22" stroke-linecap="round"/>
+        </g>
+        <!-- tool rack -->
+        <g id="rack"></g>
+        <text x="-1500" y="900" text-anchor="middle" font-size="64" fill="#8d979f" id="rackLbl">tool rack</text>
+
+        <!-- X gantry -->
+        <rect x="-610" y="18" width="1860" height="40" fill="#7d878e"/>
+        <rect x="-610" y="34" width="1860" height="6" fill="#6b747b"/>
+
+        <!-- moving head assembly -->
+        <g id="head">
+          <rect x="196" y="58" width="248" height="52" rx="4" fill="#5d676e" stroke="#7d878e"/>
+          <circle cx="220" cy="84" r="4" fill="#2b2f33"/><circle cx="420" cy="84" r="4" fill="#2b2f33"/>
+          <g id="rcv">
+            <rect x="230" y="110" width="180" height="62" rx="3" fill="var(--print)" stroke="#444b51"/>
+            <rect x="244" y="132" width="160" height="10" fill="var(--pcb)"/>
+            <rect x="404" y="118" width="18" height="40" rx="2" fill="#151719" stroke="#555"/>
+            <g id="pins"></g>
+            <g id="latch"><line x1="230" y1="150" x2="208" y2="196" stroke="#cfd4d8" stroke-width="5" stroke-linecap="round"/><circle cx="230" cy="150" r="4" fill="#cfd4d8"/></g>
+          </g>
+          <g id="tool">
+            <rect x="230" y="0" width="180" height="16" rx="2" id="plate" fill="var(--print)" stroke="var(--c-print)" stroke-width="1.5"/>
+            <rect x="244" y="-4" width="160" height="5" fill="var(--pcb)"/>
+            <g id="pads"></g>
+            <rect x="372" y="-10" width="12" height="6" fill="#111" id="idR"/>
+            <circle cx="396" cy="-7" r="3.4" fill="#333" id="led"/>
+            <g id="body"></g>
+          </g>
+          <g id="spriteStock"></g>
+          <path id="ribHead" fill="none" stroke="url(#ribB)" stroke-width="13"/>
+          <g id="plug"><rect x="0" y="-20" width="20" height="40" rx="2" fill="#1b1d1f" stroke="#666"/><rect x="2" y="-16" width="3" height="32" fill="#333"/></g>
+          <text id="idTxt" x="468" y="4" text-anchor="start" font-size="13" font-weight="600" fill="var(--teal)" opacity="0"></text>
+        </g>
+        <!-- ribbon from mainboard to head (drawn over frame) -->
+        <path id="ribW" fill="none" stroke="url(#ribB)" stroke-width="13" stroke-linejoin="round"/>
+        <path id="ribGlow" fill="none" stroke="var(--teal)" stroke-width="22" opacity="0" filter="url(#glow)" stroke-linejoin="round"/>
+        <!-- closing numbers -->
+        <g id="big" opacity="0">
+          <text x="-1480" y="-750" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="440" fill="#eef1f3">$493</text>
+          <text x="-1480" y="-580" text-anchor="middle" font-size="64" fill="#8d979f">every part: swap system + 3 new tools</text>
+          <text x="-1480" y="-360" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="150" fill="var(--teal)">first: an $11 test print</text>
+        </g>
+      </g>
+    </svg>
+    <div class="bar"><i id="prog"></i></div>
+  </div>
+  <div id="desc"><div class="fade" id="descIn"><h2 id="t"></h2><p id="d"></p></div></div>
+  <div class="hint">→ / click to advance · F full screen</div>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
+function el(tag,a,p,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;if(p)p.appendChild(e);return e}
+const C={print:'#4aa3ff',laser:'#f5a524',cnc:'#a78bfa',bend:'#2dd4bf'};
+const ID={print:'10 kΩ · 1.65 V → PRINT',laser:'22 kΩ · 2.27 V → LASER',cnc:'47 kΩ · 2.72 V → CNC',bend:'100 kΩ · 3.00 V → BEND'};
+
+/* pins + pads */
+const PX=[...Array(12)].map((_,i)=>254+i*12.6),plA=[],plB=[];
+PX.forEach(x=>{el('rect',{x:x-2.4,y:148,width:4.8,height:24,fill:'#b8933a'},$('pins'));
+ plB.push(el('rect',{x:x+1.5,y:172,width:2.6,height:6,fill:'#7a6630'},$('pins')));
+ plA.push(el('rect',{x:x-1.3,y:172,width:2.6,height:9,fill:'var(--gold)'},$('pins')));
+ el('rect',{x:x-3.2,y:-5,width:6.4,height:1.6,fill:'var(--gold)'},$('pads'))});
+
+/* tool drawings (local: plate top = 0) */
+function sprite(g,oy,board){const s=el('g',{transform:`translate(0,${oy})`},g);
+ el('rect',{x:250,y:0,width:140,height:130,rx:6,fill:'url(#fin)',stroke:'#2b2f33'},s);
+ for(let i=0;i<9;i++)el('line',{x1:258+i*15,y1:6,x2:258+i*15,y2:124,stroke:'#2e3338','stroke-width':3},s);
+ el('circle',{cx:320,cy:62,r:38,fill:'#1d2124',stroke:'#4a535a','stroke-width':2},s);
+ for(let a=0;a<6;a++){const t=a*Math.PI/3;el('path',{d:`M320 62 Q ${320+30*Math.cos(t+.5)} ${62+30*Math.sin(t+.5)} ${320+34*Math.cos(t+1)} ${62+34*Math.sin(t+1)}`,stroke:'#59636a','stroke-width':4,fill:'none'},s)}
+ el('rect',{x:296,y:130,width:48,height:20,fill:'#8a6d3b'},s);el('path',{d:'M310 150 L330 150 L320 170 Z',fill:'#c9a24a'},s);
+ if(board){el('rect',{x:390,y:16,width:8,height:46,fill:'var(--pcb)'},s);el('rect',{x:398,y:22,width:16,height:36,rx:2,fill:'#151719',stroke:'#555'},s)}
+ return s}
+function body(g,kind,harness){
+ if(kind==='print'){sprite(g,18,true);if(harness){el('path',{d:'M404 -2 C 452 -2 456 52 416 52',fill:'none',stroke:'url(#ribB)','stroke-width':9},g);el('rect',{x:414,y:38,width:14,height:30,rx:2,fill:'#1b1d1f',stroke:'#666'},g)}}
+ if(kind==='laser'){el('rect',{x:266,y:18,width:108,height:120,rx:4,fill:'url(#fin)',stroke:'#2b2f33'},g);
+  for(let i=0;i<7;i++)el('line',{x1:276+i*15,y1:24,x2:276+i*15,y2:132,stroke:'#2e3338','stroke-width':3},g);
+  el('rect',{x:256,y:138,width:128,height:58,rx:3,fill:'#f5a524',opacity:.5,stroke:'#f5a524'},g);el('circle',{cx:320,cy:200,r:7,fill:'#9cd'},g);
+  if(harness){el('rect',{x:382,y:-14,width:20,height:10,fill:'#f2f2ee'},g);['#e5484d','#f5a524','#9aa4ab'].forEach((c,i)=>el('path',{d:`M${386+i*6} -14 C ${420+i*6} -30 430 40 374 ${40+i*8}`,fill:'none',stroke:c,'stroke-width':2},g));
+   el('line',{class:'beam',x1:320,y1:207,x2:320,y2:345,stroke:'#7cc4ff','stroke-width':4,opacity:0,filter:'url(#glow)'},g)}}
+ if(kind==='cnc'){el('rect',{x:268,y:16,width:104,height:24,rx:4,fill:'var(--print)',stroke:C.cnc},g);el('rect',{x:294,y:20,width:52,height:178,rx:12,fill:'#3d4349',stroke:'#59636a'},g);
+  el('rect',{x:304,y:198,width:32,height:16,fill:'#9aa4ab'},g);el('rect',{x:317,y:214,width:6,height:40,fill:'#cfd4d8'},g);
+  if(harness){el('rect',{x:384,y:-12,width:14,height:8,fill:'#f2f2ee'},g);el('path',{d:'M391 -12 C 500 -20 470 250 392 336',fill:'none',stroke:'var(--copper)','stroke-width':2.5,'stroke-dasharray':'6 4'},g)}}
+ if(kind==='bend'){el('rect',{x:276,y:18,width:88,height:88,rx:6,fill:'#2b2f33',stroke:'#59636a'},g);el('circle',{cx:320,cy:62,r:14,fill:'#3d4349'},g);
+  el('rect',{x:317,y:106,width:6,height:16,fill:'#cfd4d8'},g);el('circle',{cx:320,cy:134,r:11,fill:'#9aa4ab'},g);el('circle',{cx:344,cy:134,r:11,fill:'#6f7a82'},g);
+  el('path',{d:'M180 145 L400 145 L430 190',fill:'none',stroke:'#e0b080','stroke-width':3},g);el('circle',{cx:404,cy:150,r:5,fill:'#cfd4d8'},g);
+  if(harness){el('rect',{x:380,y:-14,width:22,height:10,fill:'#f2f2ee'},g);['#e5484d','#4aa3ff','#2dd4bf','#1d1d1d'].forEach((c,i)=>el('path',{d:`M${383+i*5} -14 C 420 -30 410 30 364 ${36+i*8}`,fill:'none',stroke:c,'stroke-width':1.8},g))}}}
+function plateTool(g,kind){el('rect',{x:230,y:0,width:180,height:16,rx:2,fill:'var(--print)',stroke:C[kind],'stroke-width':2},g);el('rect',{x:244,y:-4,width:160,height:5,fill:'var(--pcb)'},g);body(g,kind,false)}
+let cur='print';
+function setTool(kind){cur=kind;$('body').innerHTML='';body($('body'),kind,true);$('plate').setAttribute('stroke',C[kind]);
+ [...$('rack').children].forEach(r=>r.setAttribute('opacity',r.dataset.k===kind&&S.toolOp>.01?0.12:1))}
+sprite($('spriteStock'),112,true);
+// rack: 4 stands on the table, left of the printer
+const RX={print:-2100,laser:-1720,cnc:-1340,bend:-960};
+for(const k in RX){const g=el('g',{transform:`translate(${RX[k]-320},${400}) scale(1)`},$('rack'));g.dataset.k=k;
+ el('rect',{x:226,y:-30,width:188,height:30,fill:'#2f363b'},g);el('rect',{x:232,y:-30,width:10,height:410,fill:'#2f363b'},g);el('rect',{x:398,y:-30,width:10,height:410,fill:'#2f363b'},g);
+ const t=el('g',{},g);plateTool(t,k);
+ el('text',{x:320,y:-50,'text-anchor':'middle','font-size':48,fill:C[k],'font-weight':600},g,{print:'Print',laser:'Laser',cnc:'CNC',bend:'Bend'}[k]);}
+
+/* ---------- state + render ---------- */
+const S={hx:0,plugX:415,plugY:152,spr:1,sprDy:0,rcv:0,rcvDy:-40,toolY:330,toolOp:0,latch:0,beam:0,stop:0,relay:0,rib:0,idT:0,big:0,rack:1,
+ x0:-3500,y0:-2300,x1:2800,y1:900};
+const DOCK=178;
+setTool('print');
+function render(){
+ const hx=S.hx, px=S.plugX, py=S.plugY;
+ $('head').setAttribute('transform',`translate(${hx},0)`);
+ $('ribHead').setAttribute('d',`M${780} 0 C 600 -10 ${px+120} ${py-70} ${px+20} ${py}`);
+ $('plug').setAttribute('transform',`translate(${px},${py})`);
+ const ribD=`M910 664 L910 600 L1220 600 L1220 -1150 C1220 -1260 1000 -1270 900 -1100 C 800 -900 ${1100+hx} -10 ${780+hx} 0`;
+ $('ribW').setAttribute('d',ribD);$('ribGlow').setAttribute('d',ribD);$('ribGlow').setAttribute('opacity',S.rib*.75);
+ $('spriteStock').setAttribute('opacity',S.spr);$('spriteStock').setAttribute('transform',`translate(0,${S.sprDy})`);
+ $('rcv').setAttribute('opacity',S.rcv);$('rcv').setAttribute('transform',`translate(0,${S.rcvDy})`);
+ $('tool').setAttribute('transform',`translate(0,${S.toolY})`);$('tool').setAttribute('opacity',S.toolOp);
+ const top=S.toolY-4,tA=S.toolOp>.5&&top<=181,tB=S.toolOp>.5&&top<=178;
+ plA.forEach(r=>{r.setAttribute('height',Math.max(1,Math.min(9,top-172)));r.setAttribute('filter',tA?'url(#glow)':'')});
+ plB.forEach(r=>{r.setAttribute('height',Math.max(1,Math.min(6,top-172)));r.setAttribute('filter',tB?'url(#glow)':'')});
+ const ok=tA&&tB&&S.latch>.9;$('led').setAttribute('fill',ok?'#3ddc84':'#333');$('led').setAttribute('filter',ok?'url(#glow)':'');
+ $('idR').setAttribute('fill',S.idT>.3?'var(--teal)':'#111');$('idR').setAttribute('filter',S.idT>.3?'url(#glow)':'');
+ $('idTxt').setAttribute('opacity',S.idT);$('idTxt').setAttribute('transform',`translate(0,${S.toolY})`);$('idTxt').textContent=ID[cur];
+ $('latch').setAttribute('transform',`rotate(${-38+S.latch*38} 230 150)`);
+ document.querySelectorAll('.beam').forEach(b=>b.setAttribute('opacity',S.beam*(1-S.stop)));
+ $('estop').setAttribute('filter',S.stop>.5?'url(#bigGlow)':'');$('estop').setAttribute('r',52-S.stop*6);
+ $('relayW').setAttribute('opacity',.25+.75*S.relay);
+ $('cordW').setAttribute('d',`M${346+hx} ${S.toolY+40} C ${900+hx} ${S.toolY+40} 1450 300 1520 640`);$('cordW').setAttribute('opacity',S.relay*(cur==='cnc'?1:0));
+ $('safe').setAttribute('opacity',.35+.65*Math.max(S.beam,S.stop));
+ $('big').setAttribute('opacity',S.big);
+ $('rack').setAttribute('opacity',S.rack);$('rackLbl').setAttribute('opacity',S.rack);
+ [...$('rack').children].forEach(r=>r.setAttribute('opacity',r.dataset.k===cur&&S.toolOp>.05?0.12:1));
+ fitCam();
+}
+function fitCam(){const sv=$('w'),r=sv.getBoundingClientRect();const a=r.width/Math.max(1,r.height);
+ let w=S.x1-S.x0,h=S.y1-S.y0,cx=(S.x0+S.x1)/2,cy=(S.y0+S.y1)/2;if(w/h<a)w=h*a;else h=w/a;
+ sv.setAttribute('viewBox',`${cx-w/2} ${cy-h/2} ${w} ${h}`)}
+addEventListener('resize',render);
+// camera presets
+const WHOLE={x0:-2250,y0:-1420,x1:1900,y1:960}, HEAD={x0:150,y0:-40,x1:720,y1:560}, BOARD={x0:200,y0:95,x1:660,y1:250},
+ LOWER={x0:-720,y0:-120,x1:1880,y1:800}, PRINTER={x0:-780,y0:-1420,x1:1900,y1:820};
+let raf;const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+function tw(target,ms){return new Promise(res=>{const f0={...S},t0=performance.now();
+ const f=n=>{const t=Math.min(1,(n-t0)/ms),e=ease(t);for(const k in target)S[k]=f0[k]+(target[k]-f0[k])*e;render();if(t<1)raf=requestAnimationFrame(f);else res()};raf=requestAnimationFrame(f)})}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;const live=id=>id===run;
+
+const PLUG_SPR={plugX:415,plugY:152},PLUG_RCV={plugX:423,plugY:138},PLUG_OUT={plugX:480,plugY:80};
+const STOCK={...PLUG_SPR,spr:1,sprDy:0,rcv:0,rcvDy:-40,toolOp:0,toolY:330,latch:0,beam:0,stop:0,relay:0,rib:0,idT:0,big:0,rack:1,hx:0};
+const SWAPPED={...PLUG_RCV,spr:0,rcv:1,rcvDy:0,stop:0,rib:0,idT:0,big:0,rack:1};
+
+async function dock(kind,id,opts={}){
+ if(S.toolOp>.5){await tw({latch:0,beam:0,idT:0},400);if(!live(id))return;await tw({toolY:330,toolOp:0},800);if(!live(id))return}
+ setTool(kind);S.toolY=330;await tw({toolOp:1},250);if(!live(id))return;
+ await tw({toolY:DOCK},opts.slow?1600:1100);if(!live(id))return;await tw({latch:1},450);if(!live(id))return;
+ await tw({idT:1},500)}
+
+const STEPS=[
+{t:'One printer, four machines',
+ d:'Most makers who want to 3D print, laser-engrave, carve with a small CNC (a computer-controlled cutting machine) and bend wire end up buying four separate machines: four frames, four sets of motors, four power supplies and four times the desk space. But every one of those machines does the same basic job. It moves a tool to an exact spot in X, Y and Z. Our idea is to keep the motion system you already own, a Creality Ender 3 S1 Pro 3D printer, and make only the tool at the end swappable.',
+ go:async id=>{Object.assign(S,STOCK);Object.assign(S,WHOLE);setTool('print');render();
+  while(live(id)){await tw({hx:-900},2600);if(!live(id))return;await tw({hx:700},3200);if(!live(id))return;await tw({hx:0},1600)}}},
+{t:'One cable already carries everything',
+ d:'The print head talks to the printer\'s computer (the mainboard) through one flat ribbon of 24 wires. Those wires carry everything the head needs: power to heat the nozzle, power for two fans, the temperature sensor, the bed-levelling probe, and the four wires that drive the filament motor. When we mapped all 24, we found five that the printer doesn\'t use at all. Those five spare wires are what let us swap tools without cutting or rewiring anything on the printer.',
+ go:async id=>{Object.assign(S,STOCK);render();await tw({...PRINTER,hx:0},1200);if(!live(id))return;
+  while(live(id)){await tw({rib:1},900);await wait(700);await tw({rib:.2},900)}}},
+{t:'Unplug the head, plug in our receiver',
+ d:'We unclip the ribbon from the print head and plug it straight into our receiver: a 3D-printed block that bolts on where the head used to be. Inside is a small circuit board with the exact same connector, so the printer\'s cable fits with no adapter. The board sends each of the 24 wires to its own gold, spring-loaded pin on the bottom face. From now on the cable never gets unplugged again. Tools come and go underneath it.',
+ go:async id=>{Object.assign(S,STOCK);render();await tw({...HEAD},1400);if(!live(id))return;await wait(400);
+  await tw(PLUG_OUT,1000);if(!live(id))return;await tw({sprDy:200,spr:0},1100);if(!live(id))return;
+  await tw({rcv:1,rcvDy:0},900);if(!live(id))return;await tw(PLUG_RCV,1000)}},
+{t:'Docking a tool: grounds touch first',
+ d:'Each tool sits on a plate with flat gold pads where the pins land. Three steel balls on the plate drop into V-shaped grooves on the receiver, so the tool lands in exactly the same spot every time. A flip-over latch then clamps it with about 53 newtons of force, roughly the weight of a 5 kg bag, while your finger only pushes with about 4. The pins are two heights on purpose: ground and sensor wires touch first, and power connects a split-second later, so nothing sparks or gets damaged.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,HEAD,{toolOp:0,toolY:330,latch:0});setTool('print');render();await wait(300);
+  setTool('print');await tw({toolOp:1},250);if(!live(id))return;await tw({toolY:186},1300);if(!live(id))return;await wait(600);if(!live(id))return;
+  await tw({toolY:181},700);if(!live(id))return;await wait(700);if(!live(id))return;await tw({toolY:DOCK},700);if(!live(id))return;await tw({latch:1},500)}},
+{t:'The tool tells the printer what it is',
+ d:'How does the printer know what just got plugged in? Every tool plate carries one tiny resistor, a part that holds back electricity by a set amount, and each tool uses a different value. A $10 controller board called an ESP32 sends a small voltage through it over one of the spare wires and measures what comes back. 1.65 volts means the print head, 2.27 the laser, 2.72 the CNC and 3.00 the wire bender. If it reads nothing, or a value it doesn\'t recognise, everything stays switched off.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:1,toolY:DOCK,latch:1});setTool('print');render();
+  await tw({...BOARD},1300);if(!live(id))return;const order=['print','laser','cnc','bend'];let i=0;
+  while(live(id)){setTool(order[i%4]);await tw({idT:1},500);await wait(1600);if(!live(id))return;await tw({idT:0},300);i++}}},
+{t:'Each tool only uses the wires it needs',
+ d:'Every tool has its own short cable, called a harness, running from its plate to the tool. The print head uses 22 of the 24 wires through a 10 cm copy of the original ribbon, so it works exactly as it did from the factory. The laser only needs three wires: power, an on/off signal and ground. The wire bender needs four, to drive its motor. The CNC needs just two, for a metal touch plate that tells it where the surface is. Same receiver, four completely different tools.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,HEAD,{toolOp:0,toolY:330,latch:0});render();const order=['print','laser','bend','cnc'];let i=0;
+  while(live(id)){await dock(order[i%4],id);if(!live(id))return;await wait(2400);i++}}},
+{t:'Safety, without an enclosure',
+ d:'Our printer stays open, so the safety is built into the wiring. The laser\'s power runs through a key switch and a big red emergency-stop button, so the laser physically cannot get electricity unless both are closed. No software bug can turn it on. The laser has its own orange shield, and anyone nearby wears laser-rated goggles. The CNC\'s spinning tool runs on wall power through a separate smart relay that sits off the printer, so household power never passes through the swap pins.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:0,toolY:330,latch:0});Object.assign(S,LOWER);render();
+  while(live(id)){await dock('laser',id);if(!live(id))return;await tw({beam:1},500);await wait(1500);if(!live(id))return;
+   await tw({stop:1},300);await wait(1800);if(!live(id))return;await tw({stop:0,beam:0},400);
+   await dock('cnc',id);if(!live(id))return;await tw({relay:1},700);await wait(2600);if(!live(id))return;await tw({relay:0},400)}}},
+{t:'Change tools in seconds',
+ d:'Putting it all together: flip the latch, slide one tool out, slide the next one in and flip the latch back. The pins connect, the controller reads the new tool\'s ID, the light turns green, and the printer is now a laser, a mill or a wire bender. There\'s no screwdriver, no unplugging and no change to the printer itself, so you can always put the original head back on.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:0,toolY:330,latch:0});Object.assign(S,WHOLE);render();
+  const order=['laser','cnc','bend','print'];let i=0;
+  while(live(id)){await dock(order[i%4],id);if(!live(id))return;await tw({hx:-700},1600);await tw({hx:500},1800);await tw({hx:0},900);i++}}},
+{t:'What it costs, and what\'s next',
+ d:'All the parts for the swap system and the three new tools come to about $493 CAD, and nearly $190 of that is the laser module and the wall-power relay alone. Before buying any of it, we\'re printing a small test coupon: just the receiver and one tool plate, about $11 of material. It shows us whether the pins line up, the latch holds and the tool lands in the same place every time, before we spend the other $480.',
+ go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:1,toolY:DOCK,latch:1});setTool('print');Object.assign(S,WHOLE);render();await tw({big:1,rack:.35},1200)}}
+];
+
+let cur_i=0;
+function go(i){cur_i=Math.max(0,Math.min(STEPS.length-1,i));const st=STEPS[cur_i];const id=++run;cancelAnimationFrame(raf);
+ $('count').textContent=`${cur_i+1} / ${STEPS.length}`;$('prog').style.width=((cur_i+1)/STEPS.length*100)+'%';
+ const di=$('descIn');di.style.opacity=0;setTimeout(()=>{$('t').textContent=st.t;$('d').textContent=st.d;di.style.opacity=1},250);
+ try{history.replaceState(null,'','#'+(cur_i+1))}catch(e){}
+ st.go(id)}
+addEventListener('keydown',e=>{
+ if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur_i+1)}
+ else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur_i-1)}
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
+ else if(e.key==='Home')go(0)});
+$('stage').addEventListener('click',()=>go(cur_i+1));
+render();go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
