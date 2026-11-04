@@ -28,7 +28,7 @@ svg text{font-family:"IBM Plex Sans",sans-serif}
 <body>
 <div id="app">
   <div id="stage">
-    <div class="top"><span>SP Minishop · CEN100 Team 8</span><span id="count">1 / 9</span></div>
+    <div class="top"><span>SP Minishop · CEN100 Team 8</span><span id="count">1 / 8</span></div>
     <svg id="w" preserveAspectRatio="xMidYMid meet">
       <defs>
         <pattern id="ribB" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#bfc4c8"/><rect width="1.4" height="6" fill="#8a9095"/></pattern>
@@ -256,10 +256,7 @@ const STEPS=[
  d:'Putting it all together: flip the latch, slide one tool out, slide the next one in and flip the latch back. The pins connect, the controller reads the new tool\'s ID, the light turns green, and the printer is now a laser, a mill or a wire bender. There\'s no screwdriver, no unplugging and no change to the printer itself, so you can always put the original head back on.',
  go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:0,toolY:330,latch:0});Object.assign(S,WHOLE);render();
   const order=['laser','cnc','bend','print'];let i=0;
-  while(live(id)){await dock(order[i%4],id);if(!live(id))return;await tw({hx:-700},1600);await tw({hx:500},1800);await tw({hx:0},900);i++}}},
-{t:'What it costs, and what\'s next',
- d:'All the parts for the swap system and the three new tools come to about $493 CAD, and nearly $190 of that is the laser module and the wall-power relay alone. Before buying any of it, we\'re printing a small test coupon: just the receiver and one tool plate, about $11 of material. It shows us whether the pins line up, the latch holds and the tool lands in the same place every time, before we spend the other $480.',
- go:async id=>{Object.assign(S,STOCK,SWAPPED,{toolOp:1,toolY:DOCK,latch:1});setTool('print');Object.assign(S,WHOLE);render();await tw({big:1,rack:.35},1200)}}
+  while(live(id)){await dock(order[i%4],id);if(!live(id))return;await tw({hx:-700},1600);await tw({hx:500},1800);await tw({hx:0},900);i++}}}
 ];
 
 let cur_i=0;
